@@ -3,11 +3,10 @@ package com.MarvelAPI.persistence.integration.Marvel.mapper;
 import com.MarvelAPI.persistence.integration.Marvel.Dto.CharacterDto;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import lombok.extern.log4j.Log4j;
 
 import java.util.ArrayList;
 import java.util.List;
-@Log4j
+
 public class CharacterMapper {
 
     public static List<CharacterDto> toDtoList(JsonNode response) {

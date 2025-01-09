@@ -20,10 +20,10 @@ public class CharacterController {
 
     @GetMapping("/findAll")
     public ResponseEntity<List<CharacterDto>> findAll(
-            @RequestParam(required = true) int[] series,
-            @RequestParam(required = false) int[] comic,
             @RequestParam(defaultValue = "10") int limit,
-            @RequestParam(defaultValue = "") String name
+            @RequestParam(defaultValue = "") String name,
+            @RequestParam(required = true) int[] series,
+            @RequestParam(required = false) int[] comic
     )
     {
         return ResponseEntity.ok(characterService.findAll(series,comic,limit,name));

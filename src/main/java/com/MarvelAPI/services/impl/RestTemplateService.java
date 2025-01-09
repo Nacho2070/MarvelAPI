@@ -1,6 +1,7 @@
 package com.MarvelAPI.services.impl;
 
 import com.MarvelAPI.services.HttpClientService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -12,6 +13,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Map;
 
+@Slf4j
 @Service
 public class RestTemplateService implements HttpClientService {
     @Autowired
@@ -19,11 +21,14 @@ public class RestTemplateService implements HttpClientService {
 
     @Override
     public <T> T doGet(String url, Map<String, String> queryParams, Class<T> classType) {
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(url);
+
         for (Map.Entry<String, String> entry : queryParams.entrySet()) {
             builder.queryParam(entry.getKey(),entry.getValue());
         }
         String finalUrl = builder.build().toUriString();
+        log.info("Final Url: {} ",finalUrl);
         ResponseEntity<T> response = restTemplate.exchange(finalUrl, HttpMethod.GET, null, classType);
         if (response.getStatusCode().value() != HttpStatus.OK.value()) {
             throw new RuntimeException(response.getStatusCode().toString());

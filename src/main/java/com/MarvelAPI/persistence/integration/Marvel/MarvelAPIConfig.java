@@ -1,5 +1,6 @@
 package com.MarvelAPI.persistence.integration.Marvel;
 
+import org.aspectj.lang.annotation.After;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Component
@@ -17,7 +19,7 @@ public class MarvelAPIConfig {
     @Qualifier("md5Encoder")
     private PasswordEncoder md5Encoder;
 
-    private long timeStamp = new Date(System.currentTimeMillis()).getTime();
+    private final long timeStamp = new Date(System.currentTimeMillis()).getTime();
 
     @Value("${integration.marvel.public-key}")
     private String publicKey;
@@ -28,11 +30,15 @@ public class MarvelAPIConfig {
         String hashCode = Long.toString(timeStamp).concat(publicKey).concat(privateKey);
         return md5Encoder.encode(hashCode);
     }
-    public Map<String,String> getAuthtenticationQueryParams(){
-        Map<String,String> params = new HashMap<String,String>();
-        params.put("ts", Long.toString(timeStamp));
-        params.put("apiKey", publicKey);
-        params.put("hash", getHash());
-        return params;
+
+    public Map<String,String> getAuthenticationQueryParams() {
+        Map<String, String> securityParams = new LinkedHashMap<>();
+        securityParams.put("ts", Long.toString(timeStamp));
+        securityParams.put("apiKey", publicKey);
+        securityParams.put("hash", this.getHash());
+        for (Map.Entry<String, String> entry : securityParams.entrySet()) {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        }
+        return securityParams;
     }
 }
